@@ -436,9 +436,43 @@ export function AppProvider({ children }: { children: ReactNode }) {
             id: Date.now().toString(),
             date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
         }
-        const updated = [newRecord, ...history]
+
+        let updated = [newRecord, ...history]
         setHistory(updated)
-        localStorage.setItem('nivara_history_v3', JSON.stringify(updated))
+
+        try {
+            localStorage.setItem('nivara_history_v3', JSON.stringify(updated))
+        } catch (e: any) {
+            // Handle QuotaExceededError
+            if (e.name === 'QuotaExceededError' || e.code === 22) {
+                console.warn("LocalStorage quota exceeded. Trimming old history...")
+
+                // Attempt to trim history until it fits
+                // Keep trimming the last item until we succeed or run out of items
+                let tempHistory = [...updated]
+                let success = false
+
+                while (tempHistory.length > 1 && !success) {
+                    tempHistory.pop() // Remove oldest
+                    try {
+                        localStorage.setItem('nivara_history_v3', JSON.stringify(tempHistory))
+                        success = true
+                        setHistory(tempHistory) // Update state to match storage
+                        console.log(`History trimmed to ${tempHistory.length} items to fit storage.`)
+                    } catch (retryError) {
+                        // Still too big, continue loop
+                        continue
+                    }
+                }
+
+                if (!success) {
+                    console.error("Critical: Could not save history item even after trimming. Storage is full.")
+                    alert("Storage full. Some history might not be saved.")
+                }
+            } else {
+                console.error("LocalStorage error:", e)
+            }
+        }
     }
 
     const [tracker, setTracker] = useState<any[]>([])

@@ -9,6 +9,7 @@ import {
   Video, Circle
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
+import { compressImage } from '../utils/imageCompressor'
 
 export default function ScanPage() {
   const { theme, t, isDark, addToHistory } = useApp()
@@ -99,11 +100,24 @@ export default function ScanPage() {
       const data = await response.json()
 
       // Persist to History
+      // Compress image for storage to avoid quota limits
+      let compressedPreview = preview
+      try {
+        if (preview) {
+          console.log('Compressing image for history...')
+          compressedPreview = await compressImage(preview, 300, 0.7)
+          console.log('Compression complete')
+        }
+      } catch (err) {
+        console.error('Failed to compress image:', err)
+        // Fallback to original if compression fails, though this might still risk quota issues
+      }
+
       addToHistory({
         plant: 'Unknown Plant', // The API doesn't currently return plant name, might need to extract or default
         diagnosis: data.disease,
         confidence: data.confidence === 'High' ? 92 : data.confidence === 'Medium' ? 75 : 45,
-        image: preview, // Use the local data URL
+        image: compressedPreview, // Use the compressed thumbnail
         description: data.description,
         symptoms: [], // API doesn't return structured symptoms yet, might need to parse description or leave empty
         treatment: [data.treatment], // API returns single string, wrap in array
