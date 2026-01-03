@@ -370,7 +370,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     // Load history from localStorage
     useEffect(() => {
-        const saved = localStorage.getItem('nivara_history')
+        const saved = localStorage.getItem('nivara_history_v3')
         if (saved) {
             setHistory(JSON.parse(saved))
         } else {
@@ -387,10 +387,46 @@ export function AppProvider({ children }: { children: ReactNode }) {
                     symptoms: ['Dark brown spots on older leaves', 'Yellowing of surrounding tissue', 'Concentric ring patterns'],
                     treatment: ['Apply copper-based fungicide', 'Remove infected lower leaves', 'Improve air circulation'],
                     prevention: ['Crop rotation', 'Avoid overhead watering', 'Mulching soil']
+                },
+                {
+                    id: '2',
+                    date: 'Nov 02, 2025',
+                    plant: 'Rose',
+                    diagnosis: 'Black Spot',
+                    confidence: 88,
+                    image: 'https://images.unsplash.com/photo-1596547609652-9cf5d8d76921?auto=format&fit=crop&q=80&w=600', // Placeholder image or real rose leaf URL if available, keeping existing style
+                    description: 'Black spot is a fungal disease that causes black spots on the leaves of roses, which eventually turn yellow and drop off.',
+                    symptoms: ['Black spots on upper leaf surface', 'Yellowing around spots', 'Premature leaf drop'],
+                    treatment: ['Prune infected canes', 'Apply fungicide (Neem oil)', 'Keep foliage dry'],
+                    prevention: ['Plant resistant varieties', 'Space plants for airflow', 'Clean up fallen leaves']
+                },
+                {
+                    id: '3',
+                    date: 'Nov 15, 2025',
+                    plant: 'Potato',
+                    diagnosis: 'Late Blight',
+                    confidence: 92,
+                    image: 'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&q=80&w=500', // Using library image as placeholder
+                    description: 'Late blight is a destructive disease of potatoes and tomatoes, known for causing the Irish Potato Famine.',
+                    symptoms: ['Dark water-soaked lesions on leaves', 'White fungal growth on undersides', 'Brown rot on tubers'],
+                    treatment: ['Apply fungicide immediately', 'Remove and destroy infected plants', 'Harvest tubers in dry weather'],
+                    prevention: ['Use certified disease-free seed', 'Eliminate cull piles', 'Monitor weather for blight conditions']
+                },
+                {
+                    id: '4',
+                    date: 'Dec 05, 2025',
+                    plant: 'Cucumber',
+                    diagnosis: 'Powdery Mildew',
+                    confidence: 96,
+                    image: '/cucumber_disease.jpg', // Updated image
+                    description: 'Powdery mildew looks like a white powder on the leaves and stems of infected plants.',
+                    symptoms: ['White powdery spots on leaves', 'Leaves turning yellow and drying out', 'Stunted growth'],
+                    treatment: ['Neem oil spray', 'Milk and water solution (1:10)', 'Sulfur-based fungicides'],
+                    prevention: ['Plant resistant varieties', 'Provide full sun', 'Avoid nitrogen fertilizer in late season']
                 }
             ]
             setHistory(mocks)
-            localStorage.setItem('nivara_history', JSON.stringify(mocks))
+            localStorage.setItem('nivara_history_v3', JSON.stringify(mocks))
         }
     }, [])
 
@@ -402,7 +438,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         }
         const updated = [newRecord, ...history]
         setHistory(updated)
-        localStorage.setItem('nivara_history', JSON.stringify(updated))
+        localStorage.setItem('nivara_history_v3', JSON.stringify(updated))
     }
 
     const [tracker, setTracker] = useState<any[]>([])
